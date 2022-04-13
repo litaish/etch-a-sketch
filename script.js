@@ -5,6 +5,7 @@ const greyBtn = document.getElementById("greyBtn");
 const randBtn = document.getElementById("randBtn");
 const clearBtn = document.getElementById("clearBtn");
 const eraseBtn = document.getElementById("eraseBtn");
+const sketchGrid = document.getElementById("sketchGrid");
 
 const GREEN_CELL = "rgba(0, 210, 84, 1)";
 const GREY_CELL = "rgba(117, 117, 117, 1)";
@@ -13,6 +14,9 @@ const DEFAULT_CELL = "#DCDCDC";
 // Update the current slider value (each time you drag the slider handle)
 slider.oninput = function () {
   output.innerHTML = `${this.value} x ${this.value}`;
+  // Delete all grid children before generating a new grid with a new size
+  sketchGrid.innerHTML = "";
+  generateGrid(this.value, DEFAULT_CELL);
 };
 
 function init() {
@@ -23,7 +27,6 @@ function init() {
 
 function generateGrid(size, hoverColor) {
   // Generate grid
-  sketchGrid = document.getElementById("sketchGrid");
   sketchGrid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
   sketchGrid.style.gridTemplateRows = `repeat(${size}, 1fr)`;
 
@@ -48,11 +51,19 @@ function generateGrid(size, hoverColor) {
 }
 
 function setHoverColor(hoverColor) {
-  const sketchGrid = document.getElementById("sketchGrid");
-
   // Find all children of grid (cells)
   for (let i = 0; i < sketchGrid.children.length; i++) {
     sketchGrid.children[i].onmouseover = function () {
+      this.style.backgroundColor = hoverColor;
+    }
+  } 
+}
+
+function setRandHoverColor(){
+  // Find all children of grid (cells)
+  for (let i = 0; i < sketchGrid.children.length; i++) {
+    sketchGrid.children[i].onmouseover = function () {
+      let hoverColor = `#${generateRandColor()}`;
       this.style.backgroundColor = hoverColor;
     }
   } 
@@ -64,8 +75,6 @@ function generateRandColor() {
 }
 
 function clearCells(){
-  const sketchGrid = document.getElementById("sketchGrid");
-
   // Find all children of grid (cells)
   for (let i = 0; i < sketchGrid.children.length; i++) {
     sketchGrid.children[i].style.backgroundColor = DEFAULT_CELL;
@@ -89,7 +98,7 @@ greyBtn.addEventListener("click", () => {
 randBtn.addEventListener("click", () => {
   // On random button change
   clearCells();
-  setHoverColor(`#${generateRandColor()}`);
+  setRandHoverColor();
 });
 
 clearBtn.addEventListener("click", () => {
@@ -99,4 +108,5 @@ clearBtn.addEventListener("click", () => {
 
 eraseBtn.addEventListener("click", () => {
   // On enable eraser
+  setHoverColor(DEFAULT_CELL);
 })
